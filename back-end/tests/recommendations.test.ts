@@ -33,3 +33,20 @@ describe("POST /recommendations", () => {
     expect(createdSong).not.toBeNull();
   });
 });
+
+describe("POST /recommendations/:id/upvote", () => {
+  it("Should create a upvote with status 200", async () => {
+    const newSong = newRecommendationFaker();
+    await server.post("/recommendations").send(newSong);
+    const createdSong = await prisma.recommendation.findFirst({
+      where: {
+        name: newSong.name,
+        youtubeLink: newSong.youtubeLink,
+      },
+    });
+    const result = await server.post(
+      `/recommendations/${createdSong.id}/upvote`
+    );
+    expect(result.status).toBe(200);
+  });
+});
