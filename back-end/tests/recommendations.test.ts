@@ -50,3 +50,49 @@ describe("POST /recommendations/:id/upvote", () => {
     expect(result.status).toBe(200);
   });
 });
+
+describe("POST /recommendations/:id/downvote", () => {
+  it("Should create a downvote with status 200", async () => {
+    const newSong = newRecommendationFaker();
+    await server.post("/recommendations").send(newSong);
+    const createdSong = await prisma.recommendation.findFirst({
+      where: {
+        name: newSong.name,
+        youtubeLink: newSong.youtubeLink,
+      },
+    });
+    const result = await server.post(
+      `/recommendations/${createdSong.id}/downvote`
+    );
+    expect(result.status).toBe(200);
+  });
+
+  it("Should remove a recommentation to downvotes less than -5 with status 200", async () => {
+    const newSong = newRecommendationFaker();
+    await server.post("/recommendations").send(newSong);
+    const createdSong = await prisma.recommendation.findFirst({
+      where: {
+        name: newSong.name,
+        youtubeLink: newSong.youtubeLink,
+      },
+    });
+    await prisma.recommendation.update({
+      where: {
+        id: createdSong.id,
+      },
+      data: {
+        score: -5,
+      },
+    });
+    const result = await server.post(
+      `/recommendations/${createdSong.id}/downvote`
+    );
+    const excludedSong = await prisma.recommendation.findUnique({
+      where: {
+        id: createdSong.id,
+      },
+    });
+    expect(excludedSong).toBeNull();
+    expect(result.status).toBe(200);
+  });
+});
