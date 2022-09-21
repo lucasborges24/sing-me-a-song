@@ -96,3 +96,24 @@ describe("POST /recommendations/:id/downvote", () => {
     expect(result.status).toBe(200);
   });
 });
+
+describe("GET /recommendations", () => {
+  it("should return ten recommendations with status 200", async () => {
+    await ScenarioWithWhateverYouWantRecommendations(11);
+    const result = await server.get("/recommendations");
+
+    expect(result.status).toBe(200);
+    expect(result.body).toBeInstanceOf(Array);
+    expect(result.body).toHaveLength(10);
+  });
+
+  it("should return all recomendations with status 200 when total recommentations are less than ten", async () => {
+    const RECOMMENDATIONS = 5;
+    await ScenarioWithWhateverYouWantRecommendations(RECOMMENDATIONS);
+
+    const result = await server.get("/recommendations");
+    expect(result.status).toBe(200);
+    expect(result.body).toBeInstanceOf(Array);
+    expect(result.body).toHaveLength(RECOMMENDATIONS);
+  });
+});
