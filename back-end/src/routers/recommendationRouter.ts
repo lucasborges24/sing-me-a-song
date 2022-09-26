@@ -11,4 +11,6 @@ recommendationRouter.get("/:id", recommendationController.getById);
 recommendationRouter.post("/:id/upvote", recommendationController.upvote);
 recommendationRouter.post("/:id/downvote", recommendationController.downvote);
 
+recommendationRouter.post("/reset-database", recommendationController.reset)
+
 export default recommendationRouter;
