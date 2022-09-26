@@ -164,8 +164,14 @@ describe("GET /recommendations/random", () => {
     Promise.all(resultArr);
     const lessThanTenCount = resultArr.filter((i) => i <= 10 && i >= -5).length;
     const GreaterThanTenCount = REQUESTS - lessThanTenCount;
-    console.log(lessThanTenCount, GreaterThanTenCount);
 
+    const lessThanPrecision = ((1 - Math.abs((lessThanTenCount - (0.3 * REQUESTS)) / (0.3 * REQUESTS))) * 100).toFixed(1)
+    const greaterThanPrecision = ((1 - Math.abs((GreaterThanTenCount - (0.7 * REQUESTS)) / (0.7 * REQUESTS))) * 100).toFixed(1)
+
+    console.log("Less than Precision: " + (lessThanPrecision));
+    console.log("Greater than Precision: " + (greaterThanPrecision));
+
+    
     expect(lessThanTenCount).toBeWithinRange(
       lessThanAcceptableMinInterval,
       lessThanAcceptableMaxInterval
