@@ -35,6 +35,7 @@ async function downvote(id: number) {
 
 async function getByIdOrFail(id: number) {
   const recommendation = await recommendationRepository.find(id);
+  
   if (!recommendation) throw notFoundError();
 
   return recommendation;
@@ -51,8 +52,9 @@ async function getTop(amount: number) {
 async function getRandom() {
   const random = Math.random();
   const scoreFilter = getScoreFilter(random);
-
+  
   const recommendations = await getByScore(scoreFilter);
+  
   if (recommendations.length === 0) {
     throw notFoundError();
   }
@@ -66,11 +68,11 @@ async function getByScore(scoreFilter: "gt" | "lte") {
     score: 10,
     scoreFilter,
   });
-
+    
   if (recommendations.length > 0) {
     return recommendations;
   }
-
+  
   return recommendationRepository.findAll();
 }
 
@@ -90,4 +92,6 @@ export const recommendationService = {
   get,
   getById: getByIdOrFail,
   getTop,
+  getScoreFilter,
+  getByScore,
 };
